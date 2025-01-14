@@ -3,6 +3,7 @@ package com.example.randomstringgenerator.view
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +30,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import com.example.randomstringgenerator.viewmodel.RandomStringViewModel
+import com.example.randomstringgenerator.viewmodel.RandomStringViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
-    val randomStringViewModel = ViewModelProvider(this)[RandomStringViewModel::class.java]
+    //private val randomStringViewModel = ViewModelProvider(this)[RandomStringViewModel::class.java]
+    private val randomStringViewModel: RandomStringViewModel by viewModels {
+        RandomStringViewModelFactory(application)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +52,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RandomStringGeneratorApp(
-    randomStringViewModel: RandomStringViewModel,
+    randomStringViewModel: RandomStringViewModel
 ) {
 
     val randomStringList by randomStringViewModel.randomStringList.observeAsState()
@@ -75,13 +79,13 @@ fun RandomStringGeneratorApp(
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                Spacer(modifier = Modifier.padding(2.dp))
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = length,
                     onValueChange = { length = it },
                     label = { Text("Enter length") }
                 )
-
                 Row {
                     Button(
                         onClick = {
